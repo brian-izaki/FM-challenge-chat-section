@@ -1,29 +1,108 @@
-# challenge-interactive-section
+# Frontend Mentor - Interactive comments section solution
 
-## Project setup
-```
-npm install
-```
+This is a solution to the [Interactive comments section challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/interactive-comments-section-iG1RugEG9). Frontend Mentor challenges help you improve your coding skills by building realistic projects. 
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Table of contents
 
-### Compiles and minifies for production
-```
-npm run build
-```
+- [Overview](#overview)
+  - [The challenge](#the-challenge)
+  - [Screenshot](#screenshot)
+  - [Links](#links)
+- [My process](#my-process)
+  - [Built with](#built-with)
+  - [What I learned](#what-i-learned)
+  - [Continued development](#continued-development)
+  - [Useful resources](#useful-resources)
+- [Develop](#develop)
+  - [Init Project](#init-project)
+- [Author](#author)
+- [Acknowledgments](#acknowledgments)
 
-### Run your unit tests
-```
-npm run test:unit
-```
+**Note: Delete this note and update the table of contents based on what sections you keep.**
 
-### Lints and fixes files
-```
-npm run lint
-```
+## Overview
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### The challenge
+
+Users should be able to:
+
+- View the optimal layout for the app depending on their device's screen size
+- See hover states for all interactive elements on the page
+- Create, Read, Update, and Delete comments and replies
+- Upvote and downvote comments
+- **Bonus**: If you're building a purely front-end project, use `localStorage` to save the current state in the browser that persists when the browser is refreshed.
+- **Bonus**: Instead of using the `createdAt` strings from the `data.json` file, try using timestamps and dynamically track the time since the comment or reply was posted.
+
+### Screenshot
+
+![](./screenshot.jpg)
+
+
+### Links
+
+- Solution URL: [Add solution URL here](https://your-solution-url.com)
+- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+
+## My process
+
+### Built with
+
+- Semantic HTML5 markup
+- CSS custom properties
+- Flexbox
+- CSS Grid
+- Mobile-first workflow
+- [Vue.js](https://vuejs.org/) - Framework JavaScript
+- [Sass](https://sass-lang.com/) - CSS Pre-processor
+- [Vuex](https://vuex.vuejs.org/) - Manage global states
+
+
+
+### What I learned
+
+TODO: algo de grande aprendizado no projeto... adicione partes do código
+To see how you can add code snippets, see below:
+
+
+### Continued development
+
+TODO: futuras alterações ou algo que poderia ser melhorado/implementado
+
+### Useful resources
+
+TODO: sites que ajudaram em algo, e explicar como ajudou
+- [Example resource 1](https://www.example.com) - This helped me for XYZ reason. I really liked this pattern and will use it going forward.
+- [Vue Configuration Reference](https://cli.vuejs.org/config/)
+
+## Author
+
+- Frontend Mentor - [@brian-izaki](https://www.frontendmentor.io/profile/brian-izaki)
+
+## Develop
+
+### Init Project
+- use Node version >=16
+- First init
+  ```shell
+  # to install project dependency
+  npm install
+
+  # to start
+  npm run serve
+  ```
+- Others
+  ```shell
+  # Unit tests
+  npm run test:unit
+
+  # Lint
+  npm run lint
+
+  # Build 
+  npm run build
+  ```
+
+## Acknowledgments
+
+TODO: Créditos para quem ajudou
+
