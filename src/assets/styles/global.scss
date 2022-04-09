@@ -2,19 +2,52 @@
   background-color: $gray_100;
 }
 
-.flex {
-  display: flex;
+.btn {
+  cursor: pointer;
+  border: none;
+  padding: 10px;
+  border-radius: $radius;
 }
 
-.justify-center {
-  justify-content: center;
+.link {
+  background-color: transparent;
+  color: $blue;
+
+  transition: ease-in 0.15s;
+  &:hover {
+    background-color: $gray_400;
+  }
+
+  &:active {
+    background-color: transparent;
+  }
 }
 
-.align-center {
-  align-items: center;
+.fill {
+  background-color: $blue;
+  color: $gray_100;
+
+  transition: ease-in 0.15s;
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:active {
+    background-color: $light_blue;
+  }
 }
 
-.flex-center {
-  justify-content: center;
-  align-items: center;
+textarea {
+  box-sizing: border-box;
+  resize: none;
+  border: 2px solid $gray_400;
+  border-radius: $radius;
+  padding: 5px;
+  font-family: $family;
+  font-size: $size;
+  width: 100%;
+
+  &:focus {
+    outline: 3px solid $light_blue;
+  }
 }
