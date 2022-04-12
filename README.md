@@ -1,6 +1,6 @@
 # Frontend Mentor - Interactive comments section solution
 
-This is a solution to the [Interactive comments section challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/interactive-comments-section-iG1RugEG9). Frontend Mentor challenges help you improve your coding skills by building realistic projects. 
+This is a solution to the [Interactive comments section challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/interactive-comments-section-iG1RugEG9). Frontend Mentor challenges help you improve your coding skills by building realistic projects.
 
 ## Table of contents
 
@@ -37,7 +37,6 @@ Users should be able to:
 
 ![](./screenshot.jpg)
 
-
 ### Links
 
 - Solution URL: [Add solution URL here](https://your-solution-url.com)
@@ -48,21 +47,50 @@ Users should be able to:
 ### Built with
 
 - Semantic HTML5 markup
-- CSS custom properties
+- CSS custom properties using pre-processor SCSS
 - Flexbox
 - CSS Grid
-- Mobile-first workflow
 - [Vue.js](https://vuejs.org/) - Framework JavaScript
 - [Sass](https://sass-lang.com/) - CSS Pre-processor
 - [Vuex](https://vuex.vuejs.org/) - Manage global states
 
-
-
 ### What I learned
 
-TODO: algo de grande aprendizado no projeto... adicione partes do código
-To see how you can add code snippets, see below:
+<details>
+<summary>Vue</summary>
 
+- `component` element at Vue is possible create new dynamic elements based in other component (example below is `reply-card`)
+
+  ```html
+  <div v-for="rep in reply" :key="rep.id">
+    <component :is="'reply-card'" />
+  </div>
+  ```
+
+  - see the use of loop to render N elements
+  - the attribute `is` is very important (is who tell what component is to render)
+  - [documentation](https://vuejs.org/api/built-in-special-elements.html#component)
+
+</details>
+
+<details>
+<summary>Vuex</summary>
+
+- About modules: Is ease split modules at project, just use the `module` property.
+  ```js
+  export default {
+    module: { modA: { state: {}, actions: {} /*...*/ } },
+  };
+  ```
+
+</details>
+
+<details>
+<summary>SCSS</summary>
+
+- `mixins` help on reuse of CSS properties in SCSS files. [see mixin](./src/assets//styles//_mixins.scss) in use on [Container](./src/layout/CardContainer.vue#L27)
+
+</details>
 
 ### Continued development
 
@@ -71,8 +99,11 @@ TODO: futuras alterações ou algo que poderia ser melhorado/implementado
 ### Useful resources
 
 TODO: sites que ajudaram em algo, e explicar como ajudou
+
 - [Example resource 1](https://www.example.com) - This helped me for XYZ reason. I really liked this pattern and will use it going forward.
-- [Vue Configuration Reference](https://cli.vuejs.org/config/)
+- Vue
+  - [Configuration Reference](https://cli.vuejs.org/config/)
+  - [Dynamic component](https://vuejs.org/api/built-in-special-elements.html#component)
 
 ## Author
 
@@ -81,8 +112,10 @@ TODO: sites que ajudaram em algo, e explicar como ajudou
 ## Develop
 
 ### Init Project
+
 - use Node version >=16
 - First init
+
   ```shell
   # to install project dependency
   npm install
@@ -90,7 +123,9 @@ TODO: sites que ajudaram em algo, e explicar como ajudou
   # to start
   npm run serve
   ```
+
 - Others
+
   ```shell
   # Unit tests
   npm run test:unit
@@ -98,11 +133,10 @@ TODO: sites que ajudaram em algo, e explicar como ajudou
   # Lint
   npm run lint
 
-  # Build 
+  # Build
   npm run build
   ```
 
 ## Acknowledgments
 
 TODO: Créditos para quem ajudou
-
