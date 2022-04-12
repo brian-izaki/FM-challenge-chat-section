@@ -1,7 +1,10 @@
 <template>
   <div class="card-container">
     <div>
-      <img src="@/assets/images/avatars/image-juliusomo.png" alt="profile" />
+      <!-- <img
+        src="../../../../../public/images/avatars/image-juliusomo.png"
+        alt="profile"
+      /> -->
     </div>
 
     <div class="textarea">

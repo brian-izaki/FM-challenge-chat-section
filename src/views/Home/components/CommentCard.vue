@@ -2,15 +2,15 @@
   <card-container>
     <template #score>
       <div class="card-likes">
-        <button class="btn btn-plus" @click="$emit('likeClick')">
+        <button class="btn btn-plus" @click="$emit('likeClick', comment.id)">
           <img class="icon" src="@/assets/images/icon-plus.svg" alt="Gostar" />
         </button>
 
         <div class="like-number">
-          <p>0</p>
+          <p>{{ comment.score }}</p>
         </div>
 
-        <button class="btn btn-minus" @click="$emit('unlikeClick')">
+        <button class="btn btn-minus" @click="$emit('unlikeClick', comment.id)">
           <img
             class="icon"
             src="@/assets/images/icon-minus.svg"
@@ -22,14 +22,16 @@
 
     <template #user>
       <div>
-        <img src="@/assets/images/avatars/image-amyrobson.png" alt="profile" />
+        <img :src="comment.user.image.png" alt="profile" />
       </div>
 
-      <p>Nome Amy <span>1 month</span></p>
+      <p>
+        {{ comment.user.username }} <span>{{ comment.createdAt }}</span>
+      </p>
     </template>
 
     <template #reply>
-      <button class="btn link">
+      <button class="btn link" @click="$emit('replyClick', comment.id)">
         <img src="@/assets/images/icon-reply.svg" alt="reply" />
         <span> reply</span>
       </button>
@@ -37,11 +39,7 @@
 
     <template #content>
       <div class="card-content">
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat
-          deleniti nisi nostrum provident assumenda? Ratione tenetur placeat
-          molestiae dolores nam.
-        </p>
+        <p>{{ comment.content }}</p>
       </div>
     </template>
   </card-container>
