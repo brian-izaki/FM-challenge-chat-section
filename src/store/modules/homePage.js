@@ -3,6 +3,7 @@ import data from "../../../data.json";
 const getInitialState = () => ({
   currentUser: {},
   comments: [],
+  tempReplies: [],
 });
 
 export default {
@@ -10,7 +11,13 @@ export default {
 
   state: getInitialState(),
 
-  getters: {},
+  getters: {
+    getComments(state) {
+      return state.comments.map((c) => {
+        return { ...c, tempReplies: [] };
+      });
+    },
+  },
 
   mutations: {
     SET_DATA(state, data) {

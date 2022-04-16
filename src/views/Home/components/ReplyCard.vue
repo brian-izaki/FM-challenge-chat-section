@@ -1,10 +1,7 @@
 <template>
   <div class="card-container">
     <div>
-      <!-- <img
-        src="../../../../../public/images/avatars/image-juliusomo.png"
-        alt="profile"
-      /> -->
+      <img :src="currentUser.image.png" alt="profile" />
     </div>
 
     <div class="textarea">
@@ -18,7 +15,15 @@
 </template>
 
 <script>
-export default {};
+export default {
+  name: "ReplyCard",
+  props: {
+    currentUser: {
+      type: Object,
+      required: true,
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

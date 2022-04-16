@@ -1,6 +1,6 @@
 <template>
   <section class="chat-container">
-    <template v-for="comment in comments">
+    <template v-for="comment in getComments">
       <div :key="comment.id">
         <comment-card
           :comment="comment"
@@ -18,24 +18,24 @@
             @replyClick="replyComment"
           />
         </div>
+        <div v-for="(rep, index) in repliesNow" :key="index">
+          <!-- can be use reply-card component... but, for study purposes, used dynamic component -->
+          <component :is="'reply-card'" v-bind="{ currentUser }" />
+        </div>
       </div>
     </template>
 
-    <div v-for="rep in reply" :key="rep.id">
-      <component :is="'reply-card'" />
-    </div>
+    <reply-card v-if="!!currentUser.username" :currentUser="currentUser" />
 
-    <reply-card />
-
-    <!-- TODO: todo comentário tem a possibilidade de haver um reply (um array vazio) -->
-    <!-- TODO: ao criar um reply apenas adiciono array de reply do comentário em questão -->
+    <!-- TODO: adicionar @nomeReply -->
+    <!-- TODO: fazer lógica para incluir novos comentários (ao adicionar mostrar novo componente logo abaixo com um input de texto) -->
   </section>
 </template>
 
 <script>
 import CommentCard from "./components/CommentCard.vue";
 import ReplyCard from "./components/ReplyCard.vue";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 
 export default {
   name: "HomeView",
@@ -47,12 +47,13 @@ export default {
 
   data() {
     return {
-      reply: [],
+      repliesNow: [],
     };
   },
 
   computed: {
-    ...mapState("homePage", ["comments", "currentUser"]),
+    ...mapState("homePage", ["currentUser"]),
+    ...mapGetters("homePage", ["getComments"]),
   },
 
   methods: {
