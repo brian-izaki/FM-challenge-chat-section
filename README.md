@@ -1,5 +1,7 @@
 # Frontend Mentor - Interactive comments section solution
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/cd68d86a-d44d-4751-8025-a11143b90fa1/deploy-status)](https://app.netlify.com/sites/interactive-comments-challenge/deploys)
+
 This is a solution to the [Interactive comments section challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/interactive-comments-section-iG1RugEG9). Frontend Mentor challenges help you improve your coding skills by building realistic projects.
 
 ## Table of contents
@@ -53,6 +55,7 @@ Users should be able to:
 - [Vue.js](https://vuejs.org/) - Framework JavaScript
 - [Sass](https://sass-lang.com/) - CSS Pre-processor
 - [Vuex](https://vuex.vuejs.org/) - Manage global states
+- [Mirage JS](https://miragejs.com/) - API mocking for development
 
 ### What I learned
 
@@ -89,6 +92,16 @@ Users should be able to:
 <summary>SCSS</summary>
 
 - `mixins` help on reuse of CSS properties in SCSS files. [see mixin](./src/assets//styles//_mixins.scss) in use on [Container](./src/layout/CardContainer.vue#L27)
+
+</details>
+
+<details>
+<summary>Mirage JS</summary>
+
+- use the concept of **in memory database**
+- Has same concept of JSON Server
+- Is more powerfull, is possible make relationships, has ORM, etc
+- The principal file of config is the [server.js](./src/server.js)
 
 </details>
 
