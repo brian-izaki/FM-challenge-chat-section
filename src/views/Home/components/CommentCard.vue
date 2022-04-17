@@ -31,7 +31,7 @@
     </template>
 
     <template #reply>
-      <button class="btn link" @click="$emit('replyClick', comment.id)">
+      <button class="btn link" @click="$emit('replyClick')">
         <img src="@/assets/images/icon-reply.svg" alt="reply" />
         <span> reply</span>
       </button>
@@ -39,7 +39,12 @@
 
     <template #content>
       <div class="card-content">
-        <p>{{ comment.content }}</p>
+        <p>
+          <span v-if="!!comment.replyingTo" class="text-replying"
+            >@{{ comment.replyingTo }}</span
+          >
+          {{ comment.content }}
+        </p>
       </div>
     </template>
   </card-container>
@@ -66,6 +71,10 @@ export default {
 <style lang="scss" scoped>
 .card-content {
   line-height: 1.5em;
+}
+
+.text-replying {
+  color: $blue;
 }
 
 .card-likes {
