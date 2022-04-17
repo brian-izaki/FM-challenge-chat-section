@@ -6,29 +6,42 @@
           :comment="comment"
           @likeClick="likeComment"
           @unlikeClick="unlikeComment"
-          @replyClick="replyComment"
+          @replyClick="showReply(comment.id, comment.user.username)"
         />
+
         <div class="replies-container">
-          <comment-card
-            v-for="reply in comment.replies"
-            :key="reply.id"
-            :comment="reply"
-            @likeClick="likeComment"
-            @unlikeClick="unlikeComment"
-            @replyClick="replyComment"
+          <reply-card
+            v-model="reply.content"
+            v-if="isCurrentReply(comment.id) && !!currentUser.username"
+            :currentUser="currentUser"
+            @send-click="sendReply(comment.id)"
           />
-        </div>
-        <div v-for="(rep, index) in repliesNow" :key="index">
-          <!-- can be use reply-card component... but, for study purposes, used dynamic component -->
-          <component :is="'reply-card'" v-bind="{ currentUser }" />
+          <template v-for="replyData in comment.replies">
+            <comment-card
+              :key="`comment_${replyData.id}`"
+              :comment="replyData"
+              @likeClick="likeComment"
+              @unlikeClick="unlikeComment"
+              @replyClick="showReply(replyData.id, replyData.user.username)"
+            />
+            <reply-card
+              :key="`reply_${replyData.id}`"
+              v-model="reply.content"
+              v-if="isCurrentReply(replyData.id) && !!currentUser.username"
+              :currentUser="currentUser"
+              @send-click="sendReply(replyData.id)"
+            />
+          </template>
         </div>
       </div>
     </template>
 
-    <reply-card v-if="!!currentUser.username" :currentUser="currentUser" />
-
-    <!-- TODO: adicionar @nomeReply -->
-    <!-- TODO: fazer lógica para incluir novos comentários (ao adicionar mostrar novo componente logo abaixo com um input de texto) -->
+    <reply-card
+      v-model="comment.content"
+      v-if="!!currentUser.username"
+      :currentUser="currentUser"
+      @send-click="sendComment"
+    />
   </section>
 </template>
 
@@ -47,7 +60,14 @@ export default {
 
   data() {
     return {
-      repliesNow: [],
+      currentReply: null,
+      reply: {
+        content: "",
+        replyTo: "",
+      },
+      comment: {
+        content: "",
+      },
     };
   },
 
@@ -67,8 +87,26 @@ export default {
       console.log("unliked", commentId);
     },
 
-    replyComment() {
-      this.reply.push({ component: "reply-card", id: 1 });
+    showReply(replyId, userReplying) {
+      this.currentReply = replyId;
+      this.reply.content = `@${userReplying}, `;
+      this.reply.replyTo = userReplying;
+    },
+
+    sendReply(commentId) {
+      console.log(commentId, this.reply, "teste");
+    },
+
+    sendComment() {
+      console.log(this.comment);
+    },
+
+    isCurrentReply(toReplyId) {
+      return this.currentReply === toReplyId;
+    },
+
+    cleanReplyText(content) {
+      return content.replace(/@[\d\wç]+,/g, "").trim();
     },
   },
 };
