@@ -2,6 +2,10 @@
   background-color: $gray_100;
 }
 
+.d-flex {
+  display: flex;
+}
+
 .btn {
   cursor: pointer;
   border: none;
@@ -50,4 +54,8 @@ textarea {
   &:focus {
     outline: 3px solid $light_blue;
   }
+}
+
+.w-100 {
+  width: 100%;
 }
