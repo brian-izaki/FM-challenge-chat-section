@@ -4,9 +4,12 @@
       <div :key="comment.id">
         <comment-card
           :comment="comment"
+          :user="currentUser"
           @likeClick="likeComment"
           @unlikeClick="unlikeComment"
           @replyClick="showReply(comment.id, comment.user.username)"
+          @editClick="editComment()"
+          @removeClick="showRemoveModal(comment.id)"
         />
 
         <div class="replies-container">
@@ -20,9 +23,12 @@
             <comment-card
               :key="`comment_${replyData.id}`"
               :comment="replyData"
+              :user="currentUser"
               @likeClick="likeComment"
               @unlikeClick="unlikeComment"
               @replyClick="showReply(replyData.id, replyData.user.username)"
+              @editClick="editComment()"
+              @removeClick="showRemoveModal(replyData.id)"
             />
             <reply-card
               :key="`reply_${replyData.id}`"
@@ -42,6 +48,26 @@
       :currentUser="currentUser"
       @send-click="sendComment"
     />
+
+    <c-modal v-show="showModal">
+      <template #header>
+        <h1 class="title">Delete comment</h1>
+      </template>
+      <template #content>
+        <p class="body">
+          Are you sure you want to delete this comment? This will remove the
+          comment and can't be undone
+        </p>
+      </template>
+      <template #footer>
+        <button class="btn fill w-100 gray" @click="removeModal">
+          NO, CANCEL
+        </button>
+        <button class="btn fill w-100 red" @click="deleteComment">
+          YES, DELETE
+        </button>
+      </template>
+    </c-modal>
   </section>
 </template>
 
@@ -49,10 +75,11 @@
 import CommentCard from "./components/CommentCard.vue";
 import ReplyCard from "./components/ReplyCard.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
+import CModal from "./components/CModal.vue";
 
 export default {
   name: "HomeView",
-  components: { CommentCard, ReplyCard },
+  components: { CommentCard, ReplyCard, CModal },
 
   mounted() {
     this.fetchComments();
@@ -60,6 +87,8 @@ export default {
 
   data() {
     return {
+      showModal: false,
+      toDelete: null,
       currentReply: null,
       reply: {
         content: "",
@@ -101,6 +130,24 @@ export default {
       console.log(this.comment);
     },
 
+    editComment() {
+      console.log("edited");
+    },
+
+    deleteComment() {
+      console.log("removed");
+      this.toDelete = null;
+    },
+
+    showRemoveModal(id) {
+      this.toDelete = id;
+      this.showModal = true;
+    },
+
+    removeModal() {
+      this.showModal = false;
+    },
+
     isCurrentReply(toReplyId) {
       return this.currentReply === toReplyId;
     },
@@ -124,5 +171,15 @@ export default {
   border-left: 4px solid $gray_400;
   padding-left: 50px;
   margin-left: 50px;
+}
+
+.red {
+  background: $red;
+  font-weight: bold;
+}
+
+.gray {
+  background: $gray;
+  font-weight: bold;
 }
 </style>

@@ -27,7 +27,7 @@ export default {};
   @include card-container;
 
   display: grid;
-  grid-template-columns: 70px 1fr 100px;
+  grid-template-columns: 70px 1fr 160px;
   grid-template-rows: 1fr auto auto;
 
   .score {
@@ -52,6 +52,7 @@ export default {};
     grid-row: 1/2;
 
     @include flex-centralized;
+    justify-content: flex-end;
   }
 
   .content {
