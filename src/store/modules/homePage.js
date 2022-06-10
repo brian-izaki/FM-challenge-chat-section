@@ -1,3 +1,4 @@
+import { getUserPosts, setUserPosts } from "@/services/localStorage";
 import data from "../../../data.json";
 
 const getInitialState = () => ({
@@ -20,6 +21,9 @@ export default {
   },
 
   mutations: {
+    SET_COMMENTS(state, comments) {
+      state.comments = comments;
+    },
     SET_DATA(state, data) {
       state.currentUser = data.currentUser;
       state.comments = data.comments;
@@ -34,8 +38,16 @@ export default {
 
   actions: {
     async fetchComments({ commit }) {
-      const userComments = await new Promise((resolve) => resolve(data));
+      if (!getUserPosts().currentUser) {
+        console.log(getUserPosts().currentUser);
+        setUserPosts(data);
+      }
+      const userComments = getUserPosts();
       commit("SET_DATA", userComments);
+    },
+
+    async updateComments({ state }) {
+      setUserPosts({ comments: state.comments });
     },
   },
 };

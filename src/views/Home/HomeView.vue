@@ -7,7 +7,7 @@
           :user="currentUser"
           @likeClick="likeComment"
           @unlikeClick="unlikeComment"
-          @replyClick="showReply(comment.id, comment.user.username)"
+          @replyClick="showReply(comment.id, comment.user.username, comment.id)"
           @editClick="editComment()"
           @removeClick="showRemoveModal(comment.id)"
         />
@@ -26,7 +26,9 @@
               :user="currentUser"
               @likeClick="likeComment"
               @unlikeClick="unlikeComment"
-              @replyClick="showReply(replyData.id, replyData.user.username)"
+              @replyClick="
+                showReply(replyData.id, replyData.user.username, comment.id)
+              "
               @editClick="editComment()"
               @removeClick="showRemoveModal(replyData.id)"
             />
@@ -73,8 +75,9 @@
 
 <script>
 import CommentCard from "./components/CommentCard.vue";
+import { createComment, createReply } from "@/services/posts.js";
 import ReplyCard from "./components/ReplyCard.vue";
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 import CModal from "./components/CModal.vue";
 
 export default {
@@ -89,7 +92,8 @@ export default {
     return {
       showModal: false,
       toDelete: null,
-      currentReply: null,
+      currentReplyId: null,
+      currentCommentId: null,
       reply: {
         content: "",
         replyTo: "",
@@ -106,7 +110,8 @@ export default {
   },
 
   methods: {
-    ...mapActions("homePage", ["fetchComments"]),
+    ...mapActions("homePage", ["fetchComments", "updateComments"]),
+    ...mapMutations("homePage", ["SET_COMMENTS"]),
 
     likeComment(commentId) {
       console.log("liked", commentId, this.data);
@@ -116,18 +121,40 @@ export default {
       console.log("unliked", commentId);
     },
 
-    showReply(replyId, userReplying) {
-      this.currentReply = replyId;
+    showReply(replyId, userReplying, commentId) {
+      this.currentCommentId = commentId;
+      this.currentReplyId = replyId;
       this.reply.content = `@${userReplying}, `;
       this.reply.replyTo = userReplying;
     },
 
     sendReply(commentId) {
       console.log(commentId, this.reply, "teste");
+      const replyUpdated = createReply(
+        {
+          content: this.reply.content,
+          replyingTo: this.reply.replyTo,
+          replyingId: this.currentReplyId,
+          currentUser: this.currentUser,
+        },
+        this.currentCommentId
+      );
+
+      this.SET_COMMENTS(replyUpdated);
+      this.currentReplyId = null;
+      this.updateComments();
     },
 
     sendComment() {
       console.log(this.comment);
+      const commentUpdated = createComment({
+        content: this.comment.content,
+        currentUser: this.currentUser,
+      });
+
+      this.SET_COMMENTS(commentUpdated);
+      this.currentCommentId = null;
+      this.updateComments();
     },
 
     editComment() {
@@ -149,11 +176,7 @@ export default {
     },
 
     isCurrentReply(toReplyId) {
-      return this.currentReply === toReplyId;
-    },
-
-    cleanReplyText(content) {
-      return content.replace(/@[\d\wç]+,/g, "").trim();
+      return this.currentReplyId === toReplyId;
     },
   },
 };
