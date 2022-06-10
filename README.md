@@ -71,6 +71,10 @@ Users should be able to:
   - the attribute `is` is very important (is who tell what component is to render)
   - [documentation](https://vuejs.org/api/built-in-special-elements.html#component)
 
+- `<transition>` vue element responsible of the insert animation CSS class
+  - the class names have difference between vue 2.0 and 3.0
+  - is used the specific classes from Vue and you can create your own animation without worrying with add or not classes at element
+
 </details>
 
 <details>

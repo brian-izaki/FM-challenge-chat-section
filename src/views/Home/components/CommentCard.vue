@@ -31,15 +31,29 @@
     </template>
 
     <template #reply>
-      <button class="btn link" @click="$emit('replyClick')">
-        <img src="@/assets/images/icon-reply.svg" alt="reply" />
-        <span> reply</span>
-      </button>
+      <div v-if="comment.user.username !== user.username">
+        <button class="btn link" @click="$emit('replyClick')">
+          <img src="@/assets/images/icon-reply.svg" alt="reply" />
+          <span> reply</span>
+        </button>
+      </div>
+
+      <div v-else class="d-flex">
+        <button class="btn link remove" @click="$emit('removeClick')">
+          <img src="@/assets/images/icon-delete.svg" alt="remove" />
+          <span> Remove</span>
+        </button>
+
+        <button class="btn link" @click="$emit('editClick')">
+          <img src="@/assets/images/icon-edit.svg" alt="edit" />
+          <span> Edit</span>
+        </button>
+      </div>
     </template>
 
     <template #content>
       <div class="card-content">
-        <p>
+        <p class="body">
           <span v-if="!!comment.replyingTo" class="text-replying"
             >@{{ comment.replyingTo }}</span
           >
@@ -61,6 +75,10 @@ export default {
 
   props: {
     comment: {
+      type: Object,
+      required: true,
+    },
+    user: {
       type: Object,
       required: true,
     },
@@ -120,5 +138,9 @@ export default {
     border-bottom-right-radius: $radius;
     width: 100%;
   }
+}
+
+.remove {
+  color: $red;
 }
 </style>

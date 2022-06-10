@@ -4,9 +4,12 @@
       <div :key="comment.id">
         <comment-card
           :comment="comment"
+          :user="currentUser"
           @likeClick="likeComment"
           @unlikeClick="unlikeComment"
-          @replyClick="showReply(comment.id, comment.user.username)"
+          @replyClick="showReply(comment.id, comment.user.username, comment.id)"
+          @editClick="editComment()"
+          @removeClick="showRemoveModal(comment.id)"
         />
 
         <div class="replies-container">
@@ -20,9 +23,14 @@
             <comment-card
               :key="`comment_${replyData.id}`"
               :comment="replyData"
+              :user="currentUser"
               @likeClick="likeComment"
               @unlikeClick="unlikeComment"
-              @replyClick="showReply(replyData.id, replyData.user.username)"
+              @replyClick="
+                showReply(replyData.id, replyData.user.username, comment.id)
+              "
+              @editClick="editComment()"
+              @removeClick="showRemoveModal(replyData.id)"
             />
             <reply-card
               :key="`reply_${replyData.id}`"
@@ -42,17 +50,39 @@
       :currentUser="currentUser"
       @send-click="sendComment"
     />
+
+    <c-modal v-show="showModal">
+      <template #header>
+        <h1 class="title">Delete comment</h1>
+      </template>
+      <template #content>
+        <p class="body">
+          Are you sure you want to delete this comment? This will remove the
+          comment and can't be undone
+        </p>
+      </template>
+      <template #footer>
+        <button class="btn fill w-100 gray" @click="removeModal">
+          NO, CANCEL
+        </button>
+        <button class="btn fill w-100 red" @click="deleteComment">
+          YES, DELETE
+        </button>
+      </template>
+    </c-modal>
   </section>
 </template>
 
 <script>
 import CommentCard from "./components/CommentCard.vue";
+import { createComment, createReply } from "@/services/posts.js";
 import ReplyCard from "./components/ReplyCard.vue";
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
+import CModal from "./components/CModal.vue";
 
 export default {
   name: "HomeView",
-  components: { CommentCard, ReplyCard },
+  components: { CommentCard, ReplyCard, CModal },
 
   mounted() {
     this.fetchComments();
@@ -60,7 +90,10 @@ export default {
 
   data() {
     return {
-      currentReply: null,
+      showModal: false,
+      toDelete: null,
+      currentReplyId: null,
+      currentCommentId: null,
       reply: {
         content: "",
         replyTo: "",
@@ -77,7 +110,8 @@ export default {
   },
 
   methods: {
-    ...mapActions("homePage", ["fetchComments"]),
+    ...mapActions("homePage", ["fetchComments", "updateComments"]),
+    ...mapMutations("homePage", ["SET_COMMENTS"]),
 
     likeComment(commentId) {
       console.log("liked", commentId, this.data);
@@ -87,26 +121,62 @@ export default {
       console.log("unliked", commentId);
     },
 
-    showReply(replyId, userReplying) {
-      this.currentReply = replyId;
+    showReply(replyId, userReplying, commentId) {
+      this.currentCommentId = commentId;
+      this.currentReplyId = replyId;
       this.reply.content = `@${userReplying}, `;
       this.reply.replyTo = userReplying;
     },
 
     sendReply(commentId) {
       console.log(commentId, this.reply, "teste");
+      const replyUpdated = createReply(
+        {
+          content: this.reply.content,
+          replyingTo: this.reply.replyTo,
+          replyingId: this.currentReplyId,
+          currentUser: this.currentUser,
+        },
+        this.currentCommentId
+      );
+
+      this.SET_COMMENTS(replyUpdated);
+      this.currentReplyId = null;
+      this.updateComments();
     },
 
     sendComment() {
       console.log(this.comment);
+      const commentUpdated = createComment({
+        content: this.comment.content,
+        currentUser: this.currentUser,
+      });
+
+      this.SET_COMMENTS(commentUpdated);
+      this.currentCommentId = null;
+      this.updateComments();
+    },
+
+    editComment() {
+      console.log("edited");
+    },
+
+    deleteComment() {
+      console.log("removed");
+      this.toDelete = null;
+    },
+
+    showRemoveModal(id) {
+      this.toDelete = id;
+      this.showModal = true;
+    },
+
+    removeModal() {
+      this.showModal = false;
     },
 
     isCurrentReply(toReplyId) {
-      return this.currentReply === toReplyId;
-    },
-
-    cleanReplyText(content) {
-      return content.replace(/@[\d\wç]+,/g, "").trim();
+      return this.currentReplyId === toReplyId;
     },
   },
 };
@@ -124,5 +194,15 @@ export default {
   border-left: 4px solid $gray_400;
   padding-left: 50px;
   margin-left: 50px;
+}
+
+.red {
+  background: $red;
+  font-weight: bold;
+}
+
+.gray {
+  background: $gray;
+  font-weight: bold;
 }
 </style>
