@@ -26,7 +26,8 @@
       </div>
 
       <p>
-        {{ comment.user.username }} <span>{{ comment.createdAt }}</span>
+        {{ comment.user.username }}
+        <span>{{ comment.createdAt | date }}</span>
       </p>
     </template>
 
@@ -66,6 +67,8 @@
 
 <script>
 import CardContainer from "@/layout/CardContainer.vue";
+import dateUtils from "@/utils/date.js";
+
 export default {
   name: "CommentCard",
 
@@ -81,6 +84,14 @@ export default {
     user: {
       type: Object,
       required: true,
+    },
+  },
+
+  filters: {
+    date(date) {
+      if (!date) return "";
+      console.log(date);
+      return dateUtils.convertDate(date);
     },
   },
 };
