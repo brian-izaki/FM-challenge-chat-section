@@ -2,6 +2,8 @@
 
 This is a solution to the [Interactive comments section challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/interactive-comments-section-iG1RugEG9). Frontend Mentor challenges help you improve your coding skills by building realistic projects.
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/cd68d86a-d44d-4751-8025-a11143b90fa1/deploy-status)](https://app.netlify.com/sites/interactive-comments-challenge/deploys)
+
 ## Table of contents
 
 - [Overview](#overview)
