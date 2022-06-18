@@ -1,5 +1,5 @@
 import { getUserPosts, setUserPosts } from "@/services/localStorage";
-import { removePost } from "@/services/posts";
+import { removePost, updatePost } from "@/services/posts";
 import data from "../../../data.json";
 
 const getInitialState = () => ({
@@ -51,8 +51,14 @@ export default {
       setUserPosts({ comments: state.comments });
     },
 
-    deletePost(states, { idComment, idReply }) {
+    deletePost({ dispatch }, { idComment, idReply }) {
       removePost(idComment, idReply);
+      dispatch("fetchComments");
+    },
+
+    updatePost({ dispatch }, { idComment, idReply, content }) {
+      updatePost(idComment, idReply, content);
+      dispatch("fetchComments");
     },
   },
 };

@@ -3,12 +3,15 @@
     <template v-for="comment in getComments">
       <div :key="comment.id">
         <comment-card
+          v-model="toEdit.content"
+          :isEdit="!toEdit.idReply && toEdit.idComment === comment.id"
           :comment="comment"
           :user="currentUser"
           @likeClick="likeComment"
           @unlikeClick="unlikeComment"
           @replyClick="showReply(comment.id, comment.user.username, comment.id)"
-          @editClick="editComment()"
+          @editClick="showEdit(comment.id, null)"
+          @updateConfirm="updateComment"
           @removeClick="showRemoveModal(comment.id, null)"
         />
 
@@ -21,6 +24,8 @@
           />
           <template v-for="replyData in comment.replies">
             <comment-card
+              v-model="toEdit.content"
+              :isEdit="toEdit.idReply === replyData.id"
               :key="`comment_${replyData.id}`"
               :comment="replyData"
               :user="currentUser"
@@ -29,7 +34,8 @@
               @replyClick="
                 showReply(replyData.id, replyData.user.username, comment.id)
               "
-              @editClick="editComment()"
+              @updateConfirm="updateComment"
+              @editClick="showEdit(comment.id, replyData.id)"
               @removeClick="showRemoveModal(comment.id, replyData.id)"
             />
             <reply-card
@@ -91,6 +97,7 @@ export default {
   data() {
     return {
       showModal: false,
+      toEdit: { idComment: null, idReply: null, content: "" },
       toDelete: { idComment: null, idReply: null },
       currentReplyId: null,
       currentCommentId: null,
@@ -114,6 +121,7 @@ export default {
       "fetchComments",
       "updateComments",
       "deletePost",
+      "updatePost",
     ]),
     ...mapMutations("homePage", ["SET_COMMENTS"]),
 
@@ -161,14 +169,17 @@ export default {
       this.updateComments();
     },
 
-    editComment() {
-      console.log("edited");
+    showEdit(idComment, idReply) {
+      this.toEdit = { idComment, idReply, content: "" };
+    },
+    updateComment() {
+      this.updatePost(this.toEdit);
+      this.toEdit = { idComment: null, idReply: null, content: "" };
     },
 
     async deleteComment() {
       try {
         await this.deletePost(this.toDelete);
-        this.fetchComments();
         this.showModal = false;
       } catch (e) {
         console.error(e);

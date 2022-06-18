@@ -80,6 +80,36 @@ const removePost = (idComment, idReply) => {
   return idDeleted;
 };
 
+const updatePost = (idComment, idReply, content) => {
+  const comments = getUserPosts().comments;
+  const indexComment = comments.findIndex((c) => c.id === idComment);
+
+  if (indexComment < 0)
+    throw new Error(`Error: not found the comment id: ${idComment}`);
+
+  const post = {
+    content: cleanReplyText(content),
+    updateAt: new Date(),
+  };
+
+  if (idReply) {
+    const indexReply = comments[indexComment].replies.findIndex(
+      (r) => r.id === idReply
+    );
+
+    if (indexReply < 0)
+      throw new Error(`Error: not found the reply id: ${idReply}`);
+    const reply = comments[indexComment].replies[indexReply];
+
+    comments[indexComment].replies.splice(indexReply, 1, { ...reply, ...post });
+  } else {
+    const comment = comments[indexComment];
+    comments.splice(indexComment, 1, { ...comment, ...post });
+  }
+
+  setUserPosts({ comments });
+};
+
 const cleanReplyText = (content) => {
   if (!content) {
     return "";
@@ -87,4 +117,4 @@ const cleanReplyText = (content) => {
   return content.replace(/@[\d\wç]+,/g, "").trim();
 };
 
-export { createComment, createReply, removePost };
+export { createComment, createReply, removePost, updatePost };

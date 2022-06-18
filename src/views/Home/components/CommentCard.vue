@@ -45,7 +45,7 @@
           <span> Remove</span>
         </button>
 
-        <button class="btn link" @click="$emit('editClick')">
+        <button class="btn link" @click="editComment">
           <img src="@/assets/images/icon-edit.svg" alt="edit" />
           <span> Edit</span>
         </button>
@@ -54,7 +54,16 @@
 
     <template #content>
       <div class="card-content">
-        <p class="body">
+        <div v-if="isEdit" class="edit-input">
+          <textarea
+            :value="comment.content"
+            @input="$emit('input', $event.target.value)"
+          />
+          <div>
+            <button class="btn fill" @click="updateConfirm">Update</button>
+          </div>
+        </div>
+        <p v-else class="body">
           <span v-if="!!comment.replyingTo" class="text-replying"
             >@{{ comment.replyingTo }}</span
           >
@@ -77,6 +86,10 @@ export default {
   },
 
   props: {
+    isEdit: {
+      type: Boolean,
+      required: true,
+    },
     comment: {
       type: Object,
       required: true,
@@ -93,12 +106,28 @@ export default {
       return dateUtils.convertDate(date);
     },
   },
+
+  methods: {
+    updateConfirm() {
+      this.$emit("updateConfirm");
+    },
+    editComment() {
+      this.$emit("editClick");
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .card-content {
   line-height: 1.5em;
+
+  .edit-input {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-end;
+    gap: 10px;
+  }
 }
 
 .text-replying {
