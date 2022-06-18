@@ -1,6 +1,13 @@
 import { getUserPosts, setUserPosts } from "@/services/localStorage";
-import { removePost, updatePost } from "@/services/posts";
+import {
+  getCommentIndex,
+  getReplyIndex,
+  removePost,
+  updatePost,
+} from "@/services/posts";
 import data from "../../../data.json";
+
+let debounce = null;
 
 const getInitialState = () => ({
   currentUser: {},
@@ -59,6 +66,27 @@ export default {
     updatePost({ dispatch }, { idComment, idReply, content }) {
       updatePost(idComment, idReply, content);
       dispatch("fetchComments");
+    },
+
+    updateScorePost({ state, commit }, { idComment, idReply, isAdd = true }) {
+      clearTimeout(debounce);
+      const comments = state.comments;
+      const commentINdex = getCommentIndex(comments, idComment);
+      const score = isAdd ? 1 : -1;
+
+      if (idReply) {
+        const indexReply = getReplyIndex(comments, commentINdex, idReply);
+        comments[commentINdex].replies[indexReply].score += score;
+      } else {
+        comments[commentINdex].score += score;
+      }
+
+      commit("SET_COMMENTS", comments);
+
+      debounce = setTimeout(() => {
+        console.log("timer", state.comments);
+        setUserPosts({ comments: state.comments });
+      }, 500);
     },
   },
 };

@@ -57,18 +57,10 @@ const createReply = (
 const removePost = (idComment, idReply) => {
   let idDeleted = null;
   const comments = getUserPosts().comments;
-  const indexComment = comments.findIndex((c) => c.id === idComment);
-
-  if (indexComment < 0)
-    throw new Error(`Error: not found the comment id: ${idComment}`);
+  const indexComment = getCommentIndex(comments, idComment);
 
   if (idReply) {
-    const indexReply = comments[indexComment].replies.findIndex(
-      (r) => r.id === idReply
-    );
-
-    if (indexReply < 0)
-      throw new Error(`Error: not found the reply id: ${idReply}`);
+    const indexReply = getReplyIndex(comments, indexComment, idReply);
 
     comments[indexComment].replies.splice(indexReply, 1);
   } else {
@@ -82,10 +74,7 @@ const removePost = (idComment, idReply) => {
 
 const updatePost = (idComment, idReply, content) => {
   const comments = getUserPosts().comments;
-  const indexComment = comments.findIndex((c) => c.id === idComment);
-
-  if (indexComment < 0)
-    throw new Error(`Error: not found the comment id: ${idComment}`);
+  const indexComment = getCommentIndex(comments, idComment);
 
   const post = {
     content: cleanReplyText(content),
@@ -93,12 +82,7 @@ const updatePost = (idComment, idReply, content) => {
   };
 
   if (idReply) {
-    const indexReply = comments[indexComment].replies.findIndex(
-      (r) => r.id === idReply
-    );
-
-    if (indexReply < 0)
-      throw new Error(`Error: not found the reply id: ${idReply}`);
+    const indexReply = getReplyIndex(comments, indexComment, idReply);
     const reply = comments[indexComment].replies[indexReply];
 
     comments[indexComment].replies.splice(indexReply, 1, { ...reply, ...post });
@@ -110,6 +94,20 @@ const updatePost = (idComment, idReply, content) => {
   setUserPosts({ comments });
 };
 
+const getCommentIndex = (list, id) => {
+  const index = list.findIndex((c) => c.id === id);
+
+  if (index < 0) throw new Error(`Error: not found the comment id: ${id}`);
+  return index;
+};
+
+const getReplyIndex = (list, commentIndex, id) => {
+  const index = list[commentIndex].replies.findIndex((r) => r.id === id);
+
+  if (index < 0) throw new Error(`Error: not found the reply id: ${id}`);
+  return index;
+};
+
 const cleanReplyText = (content) => {
   if (!content) {
     return "";
@@ -117,4 +115,11 @@ const cleanReplyText = (content) => {
   return content.replace(/@[\d\wç]+,/g, "").trim();
 };
 
-export { createComment, createReply, removePost, updatePost };
+export {
+  createComment,
+  createReply,
+  removePost,
+  updatePost,
+  getCommentIndex,
+  getReplyIndex,
+};

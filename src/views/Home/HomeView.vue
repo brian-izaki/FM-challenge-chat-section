@@ -7,8 +7,8 @@
           :isEdit="!toEdit.idReply && toEdit.idComment === comment.id"
           :comment="comment"
           :user="currentUser"
-          @likeClick="likeComment"
-          @unlikeClick="unlikeComment"
+          @likeClick="likeComment(comment.id, null)"
+          @unlikeClick="unlikeComment(comment.id, replyData.id)"
           @replyClick="showReply(comment.id, comment.user.username, comment.id)"
           @editClick="showEdit(comment.id, null)"
           @updateConfirm="updateComment"
@@ -29,8 +29,8 @@
               :key="`comment_${replyData.id}`"
               :comment="replyData"
               :user="currentUser"
-              @likeClick="likeComment"
-              @unlikeClick="unlikeComment"
+              @likeClick="likeComment(comment.id, replyData.id)"
+              @unlikeClick="unlikeComment(comment.id, replyData.id)"
               @replyClick="
                 showReply(replyData.id, replyData.user.username, comment.id)
               "
@@ -122,15 +122,16 @@ export default {
       "updateComments",
       "deletePost",
       "updatePost",
+      "updateScorePost",
     ]),
     ...mapMutations("homePage", ["SET_COMMENTS"]),
 
-    likeComment(commentId) {
-      console.log("liked", commentId, this.data);
+    likeComment(idComment, idReply) {
+      this.updateScorePost({ idComment, idReply, isAdd: true });
     },
 
-    unlikeComment(commentId) {
-      console.log("unliked", commentId);
+    unlikeComment(idComment, idReply) {
+      this.updateScorePost({ idComment, idReply, isAdd: false });
     },
 
     showReply(replyId, userReplying, commentId) {
