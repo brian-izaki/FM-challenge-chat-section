@@ -9,7 +9,7 @@
           @unlikeClick="unlikeComment"
           @replyClick="showReply(comment.id, comment.user.username, comment.id)"
           @editClick="editComment()"
-          @removeClick="showRemoveModal(comment.id)"
+          @removeClick="showRemoveModal(comment.id, null)"
         />
 
         <div class="replies-container">
@@ -30,7 +30,7 @@
                 showReply(replyData.id, replyData.user.username, comment.id)
               "
               @editClick="editComment()"
-              @removeClick="showRemoveModal(replyData.id)"
+              @removeClick="showRemoveModal(comment.id, replyData.id)"
             />
             <reply-card
               :key="`reply_${replyData.id}`"
@@ -62,7 +62,7 @@
         </p>
       </template>
       <template #footer>
-        <button class="btn fill w-100 gray" @click="removeModal">
+        <button class="btn fill w-100 gray" @click="hideRemoveModal">
           NO, CANCEL
         </button>
         <button class="btn fill w-100 red" @click="deleteComment">
@@ -91,7 +91,7 @@ export default {
   data() {
     return {
       showModal: false,
-      toDelete: null,
+      toDelete: { idComment: null, idReply: null },
       currentReplyId: null,
       currentCommentId: null,
       reply: {
@@ -110,7 +110,11 @@ export default {
   },
 
   methods: {
-    ...mapActions("homePage", ["fetchComments", "updateComments"]),
+    ...mapActions("homePage", [
+      "fetchComments",
+      "updateComments",
+      "deletePost",
+    ]),
     ...mapMutations("homePage", ["SET_COMMENTS"]),
 
     likeComment(commentId) {
@@ -161,17 +165,23 @@ export default {
       console.log("edited");
     },
 
-    deleteComment() {
-      console.log("removed");
-      this.toDelete = null;
+    async deleteComment() {
+      try {
+        await this.deletePost(this.toDelete);
+        this.fetchComments();
+        this.showModal = false;
+      } catch (e) {
+        console.error(e);
+      }
     },
 
-    showRemoveModal(id) {
-      this.toDelete = id;
+    showRemoveModal(idComment, idReply) {
+      this.toDelete = { idComment: null, idReply: null };
+      this.toDelete = { idComment, idReply };
       this.showModal = true;
     },
 
-    removeModal() {
+    hideRemoveModal() {
       this.showModal = false;
     },
 

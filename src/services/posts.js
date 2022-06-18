@@ -1,6 +1,7 @@
 import { v4 as uuidV4 } from "uuid";
-import { getUserPosts } from "./localStorage";
+import { getUserPosts, setUserPosts } from "./localStorage";
 
+// FIXME refactor create, use one function to reply and comment
 const createComment = ({ content, currentUser }) => {
   try {
     const uuid = uuidV4();
@@ -53,6 +54,32 @@ const createReply = (
   }
 };
 
+const removePost = (idComment, idReply) => {
+  let idDeleted = null;
+  const comments = getUserPosts().comments;
+  const indexComment = comments.findIndex((c) => c.id === idComment);
+
+  if (indexComment < 0)
+    throw new Error(`Error: not found the comment id: ${idComment}`);
+
+  if (idReply) {
+    const indexReply = comments[indexComment].replies.findIndex(
+      (r) => r.id === idReply
+    );
+
+    if (indexReply < 0)
+      throw new Error(`Error: not found the reply id: ${idReply}`);
+
+    comments[indexComment].replies.splice(indexReply, 1);
+  } else {
+    comments.splice(indexComment, 1);
+  }
+
+  setUserPosts({ comments });
+
+  return idDeleted;
+};
+
 const cleanReplyText = (content) => {
   if (!content) {
     return "";
@@ -60,4 +87,4 @@ const cleanReplyText = (content) => {
   return content.replace(/@[\d\wç]+,/g, "").trim();
 };
 
-export { createComment, createReply };
+export { createComment, createReply, removePost };

@@ -1,4 +1,5 @@
 import { getUserPosts, setUserPosts } from "@/services/localStorage";
+import { removePost } from "@/services/posts";
 import data from "../../../data.json";
 
 const getInitialState = () => ({
@@ -48,6 +49,10 @@ export default {
 
     async updateComments({ state }) {
       setUserPosts({ comments: state.comments });
+    },
+
+    deletePost(states, { idComment, idReply }) {
+      removePost(idComment, idReply);
     },
   },
 };

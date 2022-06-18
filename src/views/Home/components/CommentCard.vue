@@ -90,7 +90,6 @@ export default {
   filters: {
     date(date) {
       if (!date) return "";
-      console.log(date);
       return dateUtils.convertDate(date);
     },
   },
