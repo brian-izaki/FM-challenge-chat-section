@@ -1,6 +1,7 @@
 import { v4 as uuidV4 } from "uuid";
-import { getUserPosts } from "./localStorage";
+import { getUserPosts, setUserPosts } from "./localStorage";
 
+// FIXME refactor create, use one function to reply and comment
 const createComment = ({ content, currentUser }) => {
   try {
     const uuid = uuidV4();
@@ -53,6 +54,60 @@ const createReply = (
   }
 };
 
+const removePost = (idComment, idReply) => {
+  let idDeleted = null;
+  const comments = getUserPosts().comments;
+  const indexComment = getCommentIndex(comments, idComment);
+
+  if (idReply) {
+    const indexReply = getReplyIndex(comments, indexComment, idReply);
+
+    comments[indexComment].replies.splice(indexReply, 1);
+  } else {
+    comments.splice(indexComment, 1);
+  }
+
+  setUserPosts({ comments });
+
+  return idDeleted;
+};
+
+const updatePost = (idComment, idReply, content) => {
+  const comments = getUserPosts().comments;
+  const indexComment = getCommentIndex(comments, idComment);
+
+  const post = {
+    content: cleanReplyText(content),
+    updateAt: new Date(),
+  };
+
+  if (idReply) {
+    const indexReply = getReplyIndex(comments, indexComment, idReply);
+    const reply = comments[indexComment].replies[indexReply];
+
+    comments[indexComment].replies.splice(indexReply, 1, { ...reply, ...post });
+  } else {
+    const comment = comments[indexComment];
+    comments.splice(indexComment, 1, { ...comment, ...post });
+  }
+
+  setUserPosts({ comments });
+};
+
+const getCommentIndex = (list, id) => {
+  const index = list.findIndex((c) => c.id === id);
+
+  if (index < 0) throw new Error(`Error: not found the comment id: ${id}`);
+  return index;
+};
+
+const getReplyIndex = (list, commentIndex, id) => {
+  const index = list[commentIndex].replies.findIndex((r) => r.id === id);
+
+  if (index < 0) throw new Error(`Error: not found the reply id: ${id}`);
+  return index;
+};
+
 const cleanReplyText = (content) => {
   if (!content) {
     return "";
@@ -60,4 +115,11 @@ const cleanReplyText = (content) => {
   return content.replace(/@[\d\wç]+,/g, "").trim();
 };
 
-export { createComment, createReply };
+export {
+  createComment,
+  createReply,
+  removePost,
+  updatePost,
+  getCommentIndex,
+  getReplyIndex,
+};

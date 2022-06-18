@@ -3,13 +3,16 @@
     <template v-for="comment in getComments">
       <div :key="comment.id">
         <comment-card
+          v-model="toEdit.content"
+          :isEdit="!toEdit.idReply && toEdit.idComment === comment.id"
           :comment="comment"
           :user="currentUser"
-          @likeClick="likeComment"
-          @unlikeClick="unlikeComment"
+          @likeClick="likeComment(comment.id, null)"
+          @unlikeClick="unlikeComment(comment.id, replyData.id)"
           @replyClick="showReply(comment.id, comment.user.username, comment.id)"
-          @editClick="editComment()"
-          @removeClick="showRemoveModal(comment.id)"
+          @editClick="showEdit(comment.id, null)"
+          @updateConfirm="updateComment"
+          @removeClick="showRemoveModal(comment.id, null)"
         />
 
         <div class="replies-container">
@@ -21,16 +24,19 @@
           />
           <template v-for="replyData in comment.replies">
             <comment-card
+              v-model="toEdit.content"
+              :isEdit="toEdit.idReply === replyData.id"
               :key="`comment_${replyData.id}`"
               :comment="replyData"
               :user="currentUser"
-              @likeClick="likeComment"
-              @unlikeClick="unlikeComment"
+              @likeClick="likeComment(comment.id, replyData.id)"
+              @unlikeClick="unlikeComment(comment.id, replyData.id)"
               @replyClick="
                 showReply(replyData.id, replyData.user.username, comment.id)
               "
-              @editClick="editComment()"
-              @removeClick="showRemoveModal(replyData.id)"
+              @updateConfirm="updateComment"
+              @editClick="showEdit(comment.id, replyData.id)"
+              @removeClick="showRemoveModal(comment.id, replyData.id)"
             />
             <reply-card
               :key="`reply_${replyData.id}`"
@@ -62,7 +68,7 @@
         </p>
       </template>
       <template #footer>
-        <button class="btn fill w-100 gray" @click="removeModal">
+        <button class="btn fill w-100 gray" @click="hideRemoveModal">
           NO, CANCEL
         </button>
         <button class="btn fill w-100 red" @click="deleteComment">
@@ -91,7 +97,8 @@ export default {
   data() {
     return {
       showModal: false,
-      toDelete: null,
+      toEdit: { idComment: null, idReply: null, content: "" },
+      toDelete: { idComment: null, idReply: null },
       currentReplyId: null,
       currentCommentId: null,
       reply: {
@@ -110,15 +117,21 @@ export default {
   },
 
   methods: {
-    ...mapActions("homePage", ["fetchComments", "updateComments"]),
+    ...mapActions("homePage", [
+      "fetchComments",
+      "updateComments",
+      "deletePost",
+      "updatePost",
+      "updateScorePost",
+    ]),
     ...mapMutations("homePage", ["SET_COMMENTS"]),
 
-    likeComment(commentId) {
-      console.log("liked", commentId, this.data);
+    likeComment(idComment, idReply) {
+      this.updateScorePost({ idComment, idReply, isAdd: true });
     },
 
-    unlikeComment(commentId) {
-      console.log("unliked", commentId);
+    unlikeComment(idComment, idReply) {
+      this.updateScorePost({ idComment, idReply, isAdd: false });
     },
 
     showReply(replyId, userReplying, commentId) {
@@ -157,21 +170,30 @@ export default {
       this.updateComments();
     },
 
-    editComment() {
-      console.log("edited");
+    showEdit(idComment, idReply) {
+      this.toEdit = { idComment, idReply, content: "" };
+    },
+    updateComment() {
+      this.updatePost(this.toEdit);
+      this.toEdit = { idComment: null, idReply: null, content: "" };
     },
 
-    deleteComment() {
-      console.log("removed");
-      this.toDelete = null;
+    async deleteComment() {
+      try {
+        await this.deletePost(this.toDelete);
+        this.showModal = false;
+      } catch (e) {
+        console.error(e);
+      }
     },
 
-    showRemoveModal(id) {
-      this.toDelete = id;
+    showRemoveModal(idComment, idReply) {
+      this.toDelete = { idComment: null, idReply: null };
+      this.toDelete = { idComment, idReply };
       this.showModal = true;
     },
 
-    removeModal() {
+    hideRemoveModal() {
       this.showModal = false;
     },
 

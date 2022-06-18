@@ -96,6 +96,21 @@ Users should be able to:
 
 </details>
 
+<details>
+<summary>JavaScript Date</summary>
+
+- JavaScript have the Intl object that permit format a date or number. In this project is used to format a date.
+- The below code, is used `["pt-br", "en-US"]` the `pt-br` is the date format that I want and `en-US` is the date income.
+  ```javascript
+  new Intl.DateTimeFormat(["pt-br", "en-US"]).format(new Date());
+  // format output dd/mm/yyyy
+  ```
+  - code in [date.js](./src/utils/date.js)
+
+</details>
+
+<br>
+
 ### Continued development
 
 TODO: futuras alterações ou algo que poderia ser melhorado/implementado
